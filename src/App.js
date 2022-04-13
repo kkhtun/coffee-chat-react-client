@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useEffect, useState } from "react";
+import Chat from "./components/Chat/Chat";
+import GoogleAuth from "./components/GoogleAuth/GoogleAuth";
+import { initializeSocket, SocketContext } from "./contexts/socket";
+import { AuthContext } from "./contexts/auth";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [auth, setAuth] = useState({});
+    const [socket, setSocket] = useState({});
+
+    useEffect(() => {
+        const checkIfAuthExists = async () => {
+            let localStorageAuth = await localStorage.getItem("chat-auth");
+            let { token, email, userId } = localStorageAuth
+                ? JSON.parse(localStorageAuth)
+                : {};
+            if (token && email && userId) {
+                setAuth({ token, email, userId });
+                setSocket(initializeSocket({ token }));
+            } else {
+                setAuth({});
+            }
+        };
+        checkIfAuthExists();
+    }, []);
+
+    return (
+        <AuthContext.Provider value={{ auth, setAuth }}>
+            <SocketContext.Provider value={{ socket, setSocket }}>
+                <div className="App">
+                    {auth.token ? <Chat /> : <GoogleAuth />}
+                </div>
+            </SocketContext.Provider>
+        </AuthContext.Provider>
+    );
 }
 
 export default App;

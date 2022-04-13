@@ -1,0 +1,35 @@
+.header {
+    position: fixed;
+    top: 5px;
+    right: 0;
+    width: 90%;
+    min-height: 60px;
+    background-color: #161010; /* smoky black */
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 5px;
+
+    display: flex;
+    align-items: center;
+}
+
+.logoutButton {
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 20px;
+    border: none;
+    color: #2d1c1c;
+    background-color: wheat; /* black coffee */
+}
+
+.logoutButton:hover {
+    cursor: pointer;
+    background-color: #2d1c1c; /* black coffee */
+    color: wheat;
+}
+
+.title {
+    color: wheat;
+    font-size: 22px;
+    margin-left: 20px;
+}

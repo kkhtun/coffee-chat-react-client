@@ -1,0 +1,21 @@
+.container {
+    width: 100%;
+    padding-top: 65px;
+    padding-bottom: 65px;
+    display: flex;
+    background-color: rgba(
+        45,
+        28,
+        28,
+        0.85
+    ); /* black coffee 2d1c1c with rgba intensity reduced*/
+    min-height: 100vh;
+}
+
+.channelList {
+    width: 10%;
+}
+
+.messageList {
+    width: 90%;
+}

@@ -1,0 +1,64 @@
+.messageContainer {
+    position: fixed;
+    bottom: 90px; /* to clear bottom input box which is around 75px in height */
+    right: 0;
+    left: 10%;
+    top: 65px; /* to header panel which is around 70px in height */
+}
+
+.messageList {
+    list-style: none;
+    padding: 0 10px;
+    display: flex;
+    flex-direction: column-reverse;
+    overflow-y: scroll;
+
+    position: relative;
+    height: 100%;
+}
+
+.spaser {
+    flex: 0 1 auto;
+}
+
+.inputForm {
+    display: block;
+    position: fixed;
+    bottom: 5px;
+    right: 0;
+    width: 90%;
+    min-height: 60px;
+    background-color: #161010; /* smoky black 2 */
+    border-radius: 5px;
+    padding: 10px;
+
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.inputText {
+    outline: none;
+    border: none;
+    padding: 5px 10px;
+    background-color: #2d1c1c; /* black coffee */
+    border-radius: 5px;
+    flex-basis: 89%;
+    caret-color: wheat;
+    color: wheat;
+    font-size: 20px;
+}
+
+.sendButton {
+    flex-basis: 9%;
+    border-radius: 5px;
+    font-size: 20px;
+    border: none;
+    color: #2d1c1c;
+    background-color: wheat; /* black coffee */
+}
+
+.sendButton:hover {
+    cursor: pointer;
+    background-color: #2d1c1c; /* black coffee */
+    color: wheat;
+}

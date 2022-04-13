@@ -1,0 +1,41 @@
+.message {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 20px;
+}
+
+.messageBody {
+    display: inline-block;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: gray;
+    text-align: left;
+}
+
+.ownMessage {
+    flex-direction: row-reverse;
+}
+
+.ownMessage .messageBody {
+    background-color: lightskyblue;
+}
+
+.buttonStyle {
+    outline: none;
+    background-color: transparent;
+    border: none;
+    padding: 5px 10px;
+}
+
+.buttonDisabled {
+    display: none;
+}
+
+.messageInfo {
+    font-size: 12px;
+    display: block;
+    opacity: 0.7;
+    font-style: italic;
+    margin-top: -8px;
+}

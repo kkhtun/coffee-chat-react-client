@@ -1,0 +1,17 @@
+.channelList {
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px;
+    list-style: none;
+}
+
+.channelItem {
+    padding: 10px 0;
+    cursor: pointer;
+    font-size: 24px;
+    color: grey;
+}
+
+.activeChannelItem {
+    color: wheat;
+}
