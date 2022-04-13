@@ -29,7 +29,7 @@ function App() {
         <AuthContext.Provider value={{ auth, setAuth }}>
             <SocketContext.Provider value={{ socket, setSocket }}>
                 <div className="App">
-                    {auth.token ? <Chat /> : <GoogleAuth />}
+                    {auth.token && socket ? <Chat /> : <GoogleAuth />}
                 </div>
             </SocketContext.Provider>
         </AuthContext.Provider>
