@@ -4,10 +4,12 @@ import { AuthContext } from "../../../contexts/auth";
 import Message from "../Message/Message";
 
 import styles from "./message-list.module.css";
+import Loader from "../../Loader/Loader";
 
 export default function MessageList({ channel }) {
     const [messages, setMessages] = useState([]);
     const [text, setText] = useState("");
+    const [loading, setLoading] = useState(false);
     const scrollRef = useRef();
     const { _id: channelId } = channel;
 
@@ -18,19 +20,25 @@ export default function MessageList({ channel }) {
     useEffect(() => {
         // get and receive messages
         socket.emit("get:messages", { channelId });
+        setMessages([]);
+        setLoading(true);
         scrollRef.current && scrollRef.current.scrollTo(0, 0);
     }, [socket, channelId]);
 
     socket.on("list:messages", ({ data }) => {
         setMessages([...data]);
+        setLoading(false);
     });
 
     socket.on("list:more-messages", ({ data }) => {
         setMessages([...messages, ...data]);
+        setLoading(false);
     });
 
     socket.on("new:message", ({ data }) => {
         setMessages([data, ...messages]);
+        setLoading(false);
+        scrollRef.current && scrollRef.current.scrollTo(0, 0);
     });
 
     socket.on("deleted:message", ({ data: _id }) => {
@@ -45,8 +53,8 @@ export default function MessageList({ channel }) {
                 channel_id: channelId,
                 user_id: userId,
             });
-            scrollRef.current && scrollRef.current.scrollTo(0, 0);
             setText("");
+            setLoading(true);
         }
     };
 
@@ -58,6 +66,7 @@ export default function MessageList({ channel }) {
                     channelId,
                     skip: messages.length,
                 });
+                setLoading(true);
             }
         }
     };
@@ -65,6 +74,7 @@ export default function MessageList({ channel }) {
     return (
         <div>
             <section className={styles.messageContainer}>
+                <Loader show={loading} />
                 <ul
                     className={styles.messageList}
                     ref={scrollRef}

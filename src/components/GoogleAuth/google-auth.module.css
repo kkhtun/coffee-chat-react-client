@@ -1,0 +1,38 @@
+.login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    background-color: rgba(
+        45,
+        28,
+        28,
+        0.85
+    ); /* black coffee 2d1c1c with rgba intensity reduced*/
+    height: 100vh;
+}
+
+.card {
+    padding: 20px;
+    border-radius: 5px;
+    background-color: wheat;
+    max-width: 60%;
+}
+
+.cardTitle {
+    margin-right: 20px;
+}
+
+.card > button {
+    border-radius: 5px;
+}
+
+.loginNotice {
+    margin-top: 10px;
+    font-size: 14px;
+}
+.loginNotice span {
+    color: rebeccapurple;
+    font-size: 16px;
+    font-weight: bold;
+}
