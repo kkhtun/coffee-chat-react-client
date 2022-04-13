@@ -45,6 +45,7 @@ export default function MessageList({ channel }) {
                 channel_id: channelId,
                 user_id: userId,
             });
+            scrollRef.current && scrollRef.current.scrollTo(0, 0);
             setText("");
         }
     };
