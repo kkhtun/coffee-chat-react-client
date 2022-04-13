@@ -41,6 +41,10 @@ export default function GoogleAuth() {
         }
     };
 
+    const handleFailure = (err) => {
+        console.log("Login Failed ", err);
+    };
+
     return (
         <>
             <Loader show={loading} />
@@ -53,7 +57,7 @@ export default function GoogleAuth() {
                         clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
                         buttonText="Log in with Google"
                         onSuccess={handleLogin}
-                        onFailure={handleLogin}
+                        onFailure={handleFailure}
                         cookiePolicy={"single_host_origin"}
                     />
                     <div className={styles.loginNotice}>
