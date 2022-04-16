@@ -11,14 +11,11 @@
     padding: 0 10px;
     display: flex;
     flex-direction: column-reverse;
+    gap: 2px;
     overflow-y: scroll;
 
     position: relative;
     height: 100%;
-}
-
-.spaser {
-    flex: 0 1 auto;
 }
 
 .inputForm {
