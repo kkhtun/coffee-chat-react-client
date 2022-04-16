@@ -45,6 +45,37 @@ export default function GoogleAuth() {
         console.log("Login Failed ", err);
     };
 
+    // States and Functions for manual email login (as a workaround for Google OAuth)
+    const [inputEmail, setInputEmail] = useState("");
+    const [manual, setManual] = useState(false);
+    const handleManualEmailLogin = async (e) => {
+        e.preventDefault();
+        if (!inputEmail.includes("@")) return;
+        setLoading(true);
+        const data = await fetch(`${host}/login`, {
+            method: "POST",
+            body: JSON.stringify({ email: inputEmail }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }).then((res) => res.json());
+
+        // store returned auth info in localStorage
+        const { token, userId, email } = data;
+        if (token && userId && email) {
+            setLoading(false);
+            await localStorage.setItem(
+                "chat-auth",
+                JSON.stringify({ token, userId, email })
+            );
+            setSocket(initializeSocket({ token }));
+            setAuth({ token, userId, email });
+        } else {
+            window.alert("Something went wrong during login");
+            window.location.reload();
+        }
+    };
+
     return (
         <>
             <Loader show={loading} />
@@ -53,13 +84,40 @@ export default function GoogleAuth() {
                     <span className={styles.cardTitle}>
                         Welcome to Coffee Chat!
                     </span>
-                    <GoogleLogin
-                        clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-                        buttonText="Log in with Google"
-                        onSuccess={handleLogin}
-                        onFailure={handleFailure}
-                        cookiePolicy={"single_host_origin"}
-                    />
+                    <button
+                        onClick={() => setManual((m) => !m)}
+                        className={styles.btnLoginSwitch}
+                    >
+                        {manual ? "OAuth" : "Manual"} Login
+                    </button>
+                    {manual ? (
+                        <form
+                            className={styles.emailForm}
+                            onSubmit={handleManualEmailLogin}
+                        >
+                            <input
+                                id="email"
+                                name="email"
+                                placeholder="youremail@gmail.com"
+                                type="email"
+                                value={inputEmail}
+                                onChange={(e) => setInputEmail(e.target.value)}
+                            />
+                            <button>Go</button>
+                        </form>
+                    ) : (
+                        <span>
+                            <GoogleLogin
+                                clientId={
+                                    process.env.REACT_APP_GOOGLE_CLIENT_ID
+                                }
+                                buttonText="Log in with Google"
+                                onSuccess={handleLogin}
+                                onFailure={handleFailure}
+                                cookiePolicy={"single_host_origin"}
+                            />
+                        </span>
+                    )}
                     <div className={styles.loginNotice}>
                         <span>Notice: </span>
                         <ul>

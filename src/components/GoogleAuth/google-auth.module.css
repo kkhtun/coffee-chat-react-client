@@ -21,6 +21,8 @@
 
 .cardTitle {
     margin-right: 20px;
+    display: inline-block;
+    padding: 10px 5px;
 }
 
 .card > button {
@@ -35,4 +37,49 @@
     color: rebeccapurple;
     font-size: 16px;
     font-weight: bold;
+}
+
+.btnLoginSwitch {
+    padding: 10px;
+    margin-right: 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    border: none;
+    color: #2d1c1c;
+    background-color: wheat; /* black coffee */
+    border: 1px solid #2d1c1c;
+}
+
+.btnLoginSwitch:hover {
+    cursor: pointer;
+    background-color: #2d1c1c; /* black coffee */
+    color: wheat;
+}
+
+.emailForm {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.emailForm input {
+    padding: 12px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 5px;
+}
+
+.emailForm button {
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    border: none;
+    color: wheat;
+    background-color: #2d1c1c; /* black coffee */
+}
+
+.emailForm button:hover {
+    cursor: pointer;
+    background-color: wheat; /* black coffee */
+    color: #2d1c1c;
 }
