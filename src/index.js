@@ -3,10 +3,19 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import { AuthContextProvider } from "./contexts/auth";
+import { SocketContextProvider } from "./contexts/socket";
+import { LoaderContextProvider } from "./contexts/loader";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
-        <App />
+        <LoaderContextProvider>
+            <AuthContextProvider>
+                <SocketContextProvider>
+                    <App />
+                </SocketContextProvider>
+            </AuthContextProvider>
+        </LoaderContextProvider>
     </React.StrictMode>
 );
 

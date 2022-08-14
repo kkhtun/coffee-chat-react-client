@@ -1,12 +1,14 @@
 import styles from "./header.module.css";
 import { useContext } from "react";
 import { AuthContext } from "../../../contexts/auth";
+import { getAuth } from "firebase/auth";
+import app from "../../../firebase";
 
 export default function Header() {
     const { auth, setAuth } = useContext(AuthContext);
 
     const logoutHandler = async () => {
-        await localStorage.clear();
+        await getAuth(app).signOut();
         setAuth({});
     };
 

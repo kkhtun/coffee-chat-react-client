@@ -1,78 +1,34 @@
-import { GoogleLogin } from "react-google-login";
-import { host } from "../../environment";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import styles from "./google-auth.module.css";
+import app from "../../firebase";
 
 // Context
-import { AuthContext } from "../../contexts/auth";
-import { initializeSocket, SocketContext } from "../../contexts/socket";
 import Loader from "../Loader/Loader";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { LoaderContext } from "../../contexts/loader";
+import { fireError } from "../../helpers/alerts";
 
 export default function GoogleAuth() {
-    const [loading, setLoading] = useState(false);
-    const { setAuth } = useContext(AuthContext);
-    const { setSocket } = useContext(SocketContext);
+    const { loading, setLoading } = useContext(LoaderContext);
 
-    const handleLogin = async (googleData) => {
-        if (googleData.error) return;
-        setLoading(true);
-        const data = await fetch(`${host}/auth/google`, {
-            method: "POST",
-            body: JSON.stringify({
-                token: googleData.tokenId,
-            }),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        }).then((res) => res.json());
-        // store returned auth info in localStorage
-        const { token, userId, email } = data;
-        if (token && userId && email) {
+    const provider = new GoogleAuthProvider();
+    const signInWithGoogle = () => signInWithPopup(getAuth(app), provider);
+
+    const handleLogin = async () => {
+        try {
+            setLoading(true);
+            const result = await signInWithGoogle();
+            if (result) {
+                console.log("You are successfully logged in!");
+            } else {
+                throw new Error("Something went wrong during login");
+            }
             setLoading(false);
-            await localStorage.setItem(
-                "chat-auth",
-                JSON.stringify({ token, userId, email })
-            );
-            setSocket(initializeSocket({ token }));
-            setAuth({ token, userId, email });
-        } else {
-            window.alert("Something went wrong during login");
-            window.location.reload();
-        }
-    };
-
-    const handleFailure = (err) => {
-        console.log("Login Failed ", err);
-    };
-
-    // States and Functions for manual email login (as a workaround for Google OAuth)
-    const [inputEmail, setInputEmail] = useState("");
-    const [manual, setManual] = useState(false);
-    const handleManualEmailLogin = async (e) => {
-        e.preventDefault();
-        if (!inputEmail.includes("@")) return;
-        setLoading(true);
-        const data = await fetch(`${host}/login`, {
-            method: "POST",
-            body: JSON.stringify({ email: inputEmail }),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        }).then((res) => res.json());
-
-        // store returned auth info in localStorage
-        const { token, userId, email } = data;
-        if (token && userId && email) {
+        } catch (e) {
+            // trigger if user close the popup
+            fireError(e.message || "Something went wrong during login");
             setLoading(false);
-            await localStorage.setItem(
-                "chat-auth",
-                JSON.stringify({ token, userId, email })
-            );
-            setSocket(initializeSocket({ token }));
-            setAuth({ token, userId, email });
-        } else {
-            window.alert("Something went wrong during login");
-            window.location.reload();
+            console.log(e);
         }
     };
 
@@ -85,39 +41,12 @@ export default function GoogleAuth() {
                         Welcome to Coffee Chat!
                     </span>
                     <button
-                        onClick={() => setManual((m) => !m)}
                         className={styles.btnLoginSwitch}
+                        onClick={handleLogin}
                     >
-                        {manual ? "OAuth" : "Manual"} Login
+                        Login via Google
                     </button>
-                    {manual ? (
-                        <form
-                            className={styles.emailForm}
-                            onSubmit={handleManualEmailLogin}
-                        >
-                            <input
-                                id="email"
-                                name="email"
-                                placeholder="youremail@gmail.com"
-                                type="email"
-                                value={inputEmail}
-                                onChange={(e) => setInputEmail(e.target.value)}
-                            />
-                            <button>Go</button>
-                        </form>
-                    ) : (
-                        <span>
-                            <GoogleLogin
-                                clientId={
-                                    process.env.REACT_APP_GOOGLE_CLIENT_ID
-                                }
-                                buttonText="Log in with Google"
-                                onSuccess={handleLogin}
-                                onFailure={handleFailure}
-                                cookiePolicy={"single_host_origin"}
-                            />
-                        </span>
-                    )}
+
                     <div className={styles.loginNotice}>
                         <span>Notice: </span>
                         <ul>

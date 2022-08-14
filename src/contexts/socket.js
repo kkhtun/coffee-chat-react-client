@@ -1,22 +1,13 @@
-import socketClient from "socket.io-client";
-import { host } from "../environment";
-import { createContext } from "react";
+import React, { createContext, useState } from "react";
 
-const connectErrHandler = async (err) => {
-    window.alert("Cannot connect to server, please login again!");
-    localStorage.clear();
-    window.location.reload();
-};
+const SocketContext = createContext({});
+function SocketContextProvider({ children }) {
+    const [socket, setSocket] = useState({});
+    return (
+        <SocketContext.Provider value={{ socket, setSocket }}>
+            {children}
+        </SocketContext.Provider>
+    );
+}
 
-export const initializeSocket = ({ token }) => {
-    console.log("Init Socket Client");
-    return socketClient(host, {
-        auth: {
-            token,
-        },
-    }).once("connect_error", connectErrHandler);
-};
-export const SocketContext = createContext({
-    socket: {},
-    setSocket: (socket) => {},
-});
+export { SocketContextProvider, SocketContext };
