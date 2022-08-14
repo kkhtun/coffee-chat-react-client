@@ -1,21 +1,18 @@
 import { useState, useEffect, useContext, useRef } from "react";
 import { SocketContext } from "../../../contexts/socket";
-import { AuthContext } from "../../../contexts/auth";
 import Message from "../Message/Message";
 
 import styles from "./message-list.module.css";
-import Loader from "../../Loader/Loader";
+import { LoaderContext } from "../../../contexts/loader";
 
 export default function MessageList({ channel }) {
     const [messages, setMessages] = useState([]);
     const [text, setText] = useState("");
-    const [loading, setLoading] = useState(false);
+    const { setLoading } = useContext(LoaderContext);
     const scrollRef = useRef();
     const { _id: channelId } = channel;
 
     const { socket } = useContext(SocketContext);
-    const { auth } = useContext(AuthContext);
-    const { userId } = auth;
 
     useEffect(() => {
         // get and receive messages
@@ -23,7 +20,7 @@ export default function MessageList({ channel }) {
         setMessages([]);
         setLoading(true);
         scrollRef.current && scrollRef.current.scrollTo(0, 0);
-    }, [socket, channelId]);
+    }, [socket, channelId, setLoading]);
 
     socket.on("list:messages", ({ data }) => {
         setMessages([...data]);
@@ -51,7 +48,6 @@ export default function MessageList({ channel }) {
             socket.emit("send:message", {
                 body: text,
                 channel_id: channelId,
-                user_id: userId,
             });
             setText("");
             setLoading(true);
@@ -74,7 +70,7 @@ export default function MessageList({ channel }) {
     return (
         <div>
             <section className={styles.messageContainer}>
-                <Loader show={loading} />
+                {/* <Loader show={loading} /> */}
                 <ul
                     className={styles.messageList}
                     ref={scrollRef}
@@ -87,18 +83,20 @@ export default function MessageList({ channel }) {
                         : "Loading Messages..."}
                 </ul>
             </section>
-            <form onSubmit={submitHandler} className={styles.inputForm}>
-                <input
-                    className={styles.inputText}
-                    type="text"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    placeholder="Type something in wheat and coffee"
-                />
-                <button type="submit" className={styles.sendButton}>
-                    Send
-                </button>
-            </form>
+            {channel._id && (
+                <form onSubmit={submitHandler} className={styles.inputForm}>
+                    <input
+                        className={styles.inputText}
+                        type="text"
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                        placeholder="Type something in wheat and coffee"
+                    />
+                    <button type="submit" className={styles.sendButton}>
+                        Send
+                    </button>
+                </form>
+            )}
         </div>
     );
 }

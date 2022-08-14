@@ -9,7 +9,7 @@ import styles from "./message.module.css";
 export default function Message({ message }) {
     const { socket } = useContext(SocketContext);
     const { auth } = useContext(AuthContext);
-    const { userId, email } = auth;
+    const { email } = auth;
     const { _id, body, user_id, createdAt } = message;
 
     const deleteHandler = (_id) => {
@@ -19,10 +19,10 @@ export default function Message({ message }) {
     };
 
     const messageStyle = classnames(styles.message, {
-        [styles.ownMessage]: user_id._id === userId,
+        [styles.ownMessage]: user_id.email === email,
     });
     const deleteButtonStyle = classnames(styles.buttonStyle, {
-        [styles.buttonDisabled]: user_id._id !== userId,
+        [styles.buttonDisabled]: user_id.email !== email,
     });
 
     return (

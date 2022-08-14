@@ -1,38 +1,47 @@
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import Chat from "./components/Chat/Chat";
 import GoogleAuth from "./components/GoogleAuth/GoogleAuth";
-import { initializeSocket, SocketContext } from "./contexts/socket";
+import { SocketContext } from "./contexts/socket";
 import { AuthContext } from "./contexts/auth";
+import { getAuth } from "firebase/auth";
+import app from "./firebase";
+import { io } from "socket.io-client";
+import { host } from "./environment";
 
 function App() {
-    const [auth, setAuth] = useState({});
-    const [socket, setSocket] = useState({});
+    const { auth, setAuth } = useContext(AuthContext);
+    const { socket, setSocket } = useContext(SocketContext);
 
     useEffect(() => {
-        const checkIfAuthExists = async () => {
-            let localStorageAuth = await localStorage.getItem("chat-auth");
-            let { token, email, userId } = localStorageAuth
-                ? JSON.parse(localStorageAuth)
-                : {};
-            if (token && email && userId) {
-                setAuth({ token, email, userId });
-                setSocket(initializeSocket({ token }));
+        getAuth(app).onIdTokenChanged((user) => {
+            const { displayName, email, accessToken, photoURL } = user || {};
+            if (accessToken) {
+                setAuth({
+                    photoURL,
+                    accessToken,
+                    email,
+                    name: displayName || "Anonymous",
+                });
+                console.log("Previous token found on storage, set to context");
+                const socket = io(host, {
+                    auth: {
+                        token: accessToken,
+                    },
+                })
+                    .on("connection", console.log)
+                    .once("connect_error", console.error);
+                setSocket(socket);
             } else {
                 setAuth({});
             }
-        };
-        checkIfAuthExists();
-    }, []);
+        });
+    }, [setAuth, setSocket]);
 
     return (
-        <AuthContext.Provider value={{ auth, setAuth }}>
-            <SocketContext.Provider value={{ socket, setSocket }}>
-                <div className="App">
-                    {auth.token && socket ? <Chat /> : <GoogleAuth />}
-                </div>
-            </SocketContext.Provider>
-        </AuthContext.Provider>
+        <div className="App">
+            {auth.accessToken && socket ? <Chat /> : <GoogleAuth />}
+        </div>
     );
 }
 
